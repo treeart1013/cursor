@@ -1,5 +1,15 @@
 {
-  "files": [],
+  "extends": "@vue/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["node"]
+  },
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "references": [
     {
       "path": "./tsconfig.node.json"

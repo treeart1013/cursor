@@ -1,63 +1,106 @@
 # Chatmon
 
-A frontend application for a corporate wiki AI search service. This project provides a chat-based user interface to compare responses from multiple AI models simultaneously.
+기업 위키 AI 검색 서비스를 위한 프론트엔드 애플리케이션입니다. 이 프로젝트는 여러 AI 모델의 응답을 동시에 비교할 수 있는 채팅 기반 사용자 인터페이스를 제공합니다.
 
-## Development History
+## 개발 히스토리
 
-The project was developed from a detailed plan to a functional application, documented through a series of steps.
+프로젝트는 상세 계획부터 기능 구현까지 여러 단계를 거쳐 개발되었습니다.
 
-### 1. Initial Project Setup & Troubleshooting
-- The project was initiated using Vue.js, scaffolding the `chatmon` with TypeScript, Vue Router, ESLint, and Prettier.
-- A key initial challenge was overcoming an outdated Node.js environment, which was resolved by upgrading the Node.js version.
+### 1. 초기 프로젝트 설정 및 문제 해결
+- Vue.js를 사용하여 프로젝트를 시작했으며, TypeScript, Vue Router, ESLint, Prettier를 함께 구성했습니다.
+- 초기 주요 과제는 오래된 Node.js 버전 문제를 해결하는 것이었으며, 성공적으로 버전을 업그레이드했습니다.
 
-### 2. Scaffolding and Component Implementation
-- A global dark mode theme was applied for a consistent look and feel.
-- Core UI components were built: `SidebarMenu`, `ChatWindow`, `ChatInput`, `ChatHeader`, `TypingIndicator`, and `HtmlRenderer`.
-- The application state (like message history) was centralized in the `HomeView.vue` parent component, passing data down to child components via props.
+### 2. 기본 구조 및 컴포넌트 구현
+- 일관된 디자인을 위해 글로벌 다크 모드 테마를 적용했습니다.
+- 핵심 UI 컴포넌트(`SidebarMenu`, `ChatWindow`, `ChatInput`, `ChatHeader`, `TypingIndicator`, `HtmlRenderer`)를 구현했습니다.
+- 애플리케이션 상태(메시지 기록 등)를 부모 컴포넌트인 `HomeView.vue`에서 중앙 관리하고, 자식 컴포넌트에는 props를 통해 데이터를 전달하도록 구성했습니다.
 
-### 3. API Integration and Core Logic
-- An API service was created in `src/services/api.ts`.
-- `EventSource` was used to handle Server-Sent Events (SSE) for real-time streaming of responses from the backend AI service.
+### 3. API 연동 및 핵심 로직
+- API 서비스 로직을 `src/services/api.ts`에 구현했습니다.
+- 백엔드 AI 서비스로부터 실시간 스트리밍 응답을 받기 위해 Server-Sent Events(SSE)를 `EventSource`로 처리했습니다.
 
-### 4. Major Feature Enhancements & Refactoring
-- **Dual Chat Windows**: The UI was refactored from a single chat window to a side-by-side dual-window layout to facilitate model comparison.
-- **Simultaneous API Calls**: The logic was updated to trigger two parallel API calls from a single user input, targeting `o4-mini` and `gpt-4o` models respectively.
-- **Model Selection**: A model selection dropdown was added to each `ChatHeader`, allowing users to choose the AI model for each window.
-- **Login and Route Protection**:
-    - **Pinia** was integrated for global state management, specifically for user authentication.
-    - A `LoginView.vue` page was created.
-    - **Vue Router's** navigation guards were implemented to protect the main chat interface, redirecting unauthenticated users to the login page.
-    - A logout feature was added to the header.
+### 4. 주요 기능 개선 및 리팩토링
+- **듀얼 채팅창**: 모델 비교를 용이하게 하기 위해 단일 채팅창에서 좌우 분할된 듀얼 채팅창 레이아웃으로 리팩토링했습니다.
+- **동시 API 호출**: 단일 사용자 입력으로 `o4-mini`와 `gpt-4o` 모델에 각각 병렬 API를 호출하도록 로직을 개선했습니다.
+- **모델 선택**: 각 채팅창 헤더에 모델 선택 드롭다운을 추가하여 사용자가 창별로 AI 모델을 선택할 수 있게 했습니다.
+- **로그인 및 라우트 보호**:
+    - 사용자 인증 등 전역 상태 관리를 위해 **Pinia**를 도입했습니다.
+    - 로그인 페이지(`LoginView.vue`)를 생성했습니다.
+    - **Vue Router**의 네비게이션 가드를 구현하여 인증되지 않은 사용자는 로그인 페이지로 리디렉션되도록 보호했습니다.
+    - 헤더에 로그아웃 기능을 추가했습니다.
 
-### 5. Bug Fixing and Polishing
-- **Input Bug**: Fixed an issue where using Korean IME could cause the message to be sent twice.
-- **Rendering Bug**: Ensured AI responses were rendered as HTML from the beginning of the stream using the `HtmlRenderer` component.
-- **Layout Troubleshooting**: Resolved a persistent CSS layout issue that created an unwanted blank space on the right side of the screen.
-- **UI Polish**:
-    - Added a chat turn limit with a visual counter.
-    - Disabled the send button during API calls to prevent multiple submissions.
-    - Added placeholder text to indicate loading states or when the turn limit is reached.
-- **Code Cleanup**: Removed unused files and folders from the initial project template.
+### 5. 버그 수정 및 폴리싱
+- **입력 버그**: 한글 입력 시 메시지가 두 번 전송되는 문제를 수정했습니다.
+- **렌더링 버그**: `HtmlRenderer` 컴포넌트를 사용하여 AI 응답이 스트림 시작부터 HTML로 렌더링되도록 수정했습니다.
+- **레이아웃 문제 해결**: 화면 오른쪽에 불필요한 공백이 생기는 고질적인 CSS 레이아웃 문제를 해결했습니다.
+- **UI 개선**:
+    - 채팅 턴 제한과 카운터를 추가했습니다.
+    - API 호출 중에는 전송 버튼을 비활성화하여 중복 전송을 방지했습니다.
+    - 로딩 상태나 턴 제한 도달 시 적절한 플레이스홀더 텍스트를 표시하도록 개선했습니다.
+- **코드 정리**: 초기 프로젝트 템플릿에서 사용하지 않는 파일과 폴더를 삭제했습니다.
 
-## Project Setup
+## 프로젝트 설정
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## 환경 변수 설정
 
-```sh
-npm run dev
-```
+이 프로젝트는 `.env` 파일을 사용하여 환경별 변수를 관리합니다. Vite는 실행 모드에 따라 적절한 환경 변수 파일을 로드합니다.
 
-### Type-Check, Compile and Minify for Production
+### 환경 변수
 
-```sh
-npm run build
-```
+API 호스트는 `VITE_API_HOST` 변수를 통해 설정됩니다. 이 변수를 설정하려면 프로젝트 루트에 아래 파일들을 생성하세요. `.env.local` 파일은 Git에 의해 추적되지 않으며, 로컬 환경에서 값을 덮어쓰는 용도로 사용됩니다.
 
-### Lint with [ESLint](https://eslint.org/)
+- **`.env.local` (로컬 개발용)**
+  ```
+  VITE_API_HOST=http://localhost:8080
+  ```
+- **`.env.development` (개발 환경용)**
+  ```
+  VITE_API_HOST=http://dev-api.your-domain.com
+  ```
+- **`.env.qa` (QA 환경용)**
+  ```
+  VITE_API_HOST=http://qa-api.your-domain.com
+  ```
+
+필요한 환경 변수를 안내하기 위해 `.env.example` 파일이 프로젝트에 포함되어 있습니다.
+
+## 실행 및 빌드 스크립트
+
+### 개발 서버 실행
+
+- **로컬 환경:**
+  ```sh
+  npm run dev
+  ```
+- **Dev 환경:**
+  ```sh
+  npm run dev:dev
+  ```
+- **QA 환경:**
+  ```sh
+  npm run dev:qa
+  ```
+
+### 프로덕션 빌드
+
+- **일반 프로덕션:**
+  ```sh
+  npm run build
+  ```
+- **Dev 환경용 빌드:**
+  ```sh
+  npm run build:dev
+  ```
+- **QA 환경용 빌드:**
+  ```sh
+  npm run build:qa
+  ```
+
+## 코드 스타일 검사 (Lint)
 
 ```sh
 npm run lint

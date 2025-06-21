@@ -1,26 +1,25 @@
 <template>
-  <div class="chat-header" ref="dropdownRef">
-    <div class="model-info" @click="toggleDropdown">
-      <span class="model-name">{{ modelValue.name }}</span>
-      <span class="dropdown-icon" :class="{ open: isOpen }">▼</span>
-    </div>
-    <div class="header-right">
-      <span class="username" v-if="authStore.user">{{ authStore.user.name }}님</span>
-      <button @click="handleLogout" class="logout-button">로그아웃</button>
-    </div>
-    <Transition name="fade">
-      <div v-if="isOpen" class="dropdown-menu">
-        <ul>
-          <li v-for="model in availableModels" :key="model.id" @click="selectModel(model)">
-            <div class="model-details">
-              <span class="model-list-name">{{ model.name }}</span>
-              <span class="model-description">{{ model.description }}</span>
-            </div>
-            <span v-if="model.id === modelValue.id" class="checkmark">✓</span>
-          </li>
-        </ul>
+  <div class="chat-header">
+    <span class="header-title">{{ title }}</span>
+    <div class="model-selector" ref="dropdownRef">
+      <div class="model-info" @click="toggleDropdown">
+        <span class="model-name">{{ modelValue.name }}</span>
+        <span class="dropdown-icon" :class="{ open: isOpen }">▼</span>
       </div>
-    </Transition>
+      <Transition name="fade">
+        <div v-if="isOpen" class="dropdown-menu">
+          <ul>
+            <li v-for="model in availableModels" :key="model.id" @click="selectModel(model)">
+              <div class="model-details">
+                <span class="model-list-name">{{ model.name }}</span>
+                <span class="model-description">{{ model.description }}</span>
+              </div>
+              <span v-if="model.id === modelValue.id" class="checkmark">✓</span>
+            </li>
+          </ul>
+        </div>
+      </Transition>
+    </div>
   </div>
 </template>
 
@@ -28,19 +27,16 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import type { AiModel } from '@/types/models';
 import { models as availableModels } from '@/types/models';
-import { useAuthStore } from '@/stores/auth';
-import { useRouter } from 'vue-router';
 
 const props = defineProps<{
   modelValue: AiModel;
+  title: string;
 }>();
 
 const emit = defineEmits(['update:modelValue']);
 
 const isOpen = ref(false);
 const dropdownRef = ref<HTMLElement | null>(null);
-const authStore = useAuthStore();
-const router = useRouter();
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
@@ -55,11 +51,6 @@ const handleClickOutside = (event: MouseEvent) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
     isOpen.value = false;
   }
-};
-
-const handleLogout = () => {
-  authStore.logout();
-  router.push('/login');
 };
 
 onMounted(() => {
@@ -77,8 +68,21 @@ onUnmounted(() => {
   padding: 15px 20px;
   border-bottom: 1px solid var(--color-border);
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+}
+
+.header-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.model-selector {
+  position: relative;
 }
 
 .model-info {
@@ -105,8 +109,7 @@ onUnmounted(() => {
 .dropdown-menu {
   position: absolute;
   top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 0;
   margin-top: 8px;
   width: 280px;
   background-color: #2a2a2a;
@@ -163,31 +166,5 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-}
-
-.username {
-  margin-right: 16px;
-  font-size: 0.9em;
-  color: #ccc;
-}
-
-.logout-button {
-  background: #4a4a4a;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9em;
-  transition: background-color 0.2s;
-}
-
-.logout-button:hover {
-  background: #5a5a5a;
 }
 </style> 

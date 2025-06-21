@@ -1,10 +1,11 @@
 <template>
   <div class="chat-window">
-    <div v-for="msg in messages" :key="msg.id" class="message-container" :class="`message-${msg.sender}`">
-      <div class="message-bubble">
-        <TypingIndicator v-if="msg.typing" />
-        <HtmlRenderer v-else-if="msg.isHtml" :html-content="msg.text" />
-        <p v-else>{{ msg.text }}</p>
+    <div v-for="message in messages" :key="message.id" class="message-container">
+      <div :class="['message', message.sender, { 'initial-message': message.isInitial }]">
+        <TypingIndicator v-if="message.typing" />
+        <HtmlRenderer v-else-if="message.isHtml" :html-content="message.text" />
+        <span v-else>{{ message.text }}</span>
+        <div v-if="message.error" class="error-message">{{ message.text }}</div>
       </div>
     </div>
   </div>
@@ -13,14 +14,7 @@
 <script setup lang="ts">
 import TypingIndicator from './TypingIndicator.vue';
 import HtmlRenderer from './HtmlRenderer.vue';
-
-interface Message {
-  id: number;
-  text: string;
-  sender: 'ai' | 'user';
-  isHtml?: boolean;
-  typing?: boolean;
-}
+import type { Message } from '@/types/models';
 
 defineProps<{
   messages: Message[];
@@ -31,35 +25,55 @@ defineProps<{
 .chat-window {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 15px;
 }
 
 .message-container {
   display: flex;
 }
 
-.message-container.message-user {
-  justify-content: flex-end;
-}
-
-.message-container.message-ai {
-  justify-content: flex-start;
-}
-
-.message-bubble {
+.message {
   padding: 12px 18px;
   border-radius: 18px;
-  max-width: 70%;
+  max-width: 80%;
+  word-wrap: break-word;
   line-height: 1.6;
 }
 
-.message-user .message-bubble {
-  background-color: #2c3e50;
-  color: white;
+.message.user {
+  background-color: #3a506b;
+  color: #fff;
+  align-self: flex-end;
+  margin-left: auto;
 }
 
-.message-ai .message-bubble {
+.message.ai {
   background-color: #2a2a2a;
   color: var(--color-text);
+  align-self: flex-start;
+  margin-right: auto;
+}
+
+.initial-message {
+  background-color: #2a2a2a;
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  text-align: left;
+}
+
+.initial-message :deep(p) {
+  margin: 5px 0;
+  color: var(--color-text);
+}
+
+.initial-message :deep(.highlight) {
+  color: #ffe490;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #ff5c5c;
+  font-size: 0.9em;
 }
 </style> 

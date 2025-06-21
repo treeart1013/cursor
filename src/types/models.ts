@@ -8,10 +8,11 @@ export interface AiModel {
 export interface Message {
   id: number;
   text: string;
-  sender: 'ai' | 'user';
+  sender: 'user' | 'ai';
   isHtml?: boolean;
   typing?: boolean;
   error?: boolean;
+  isInitial?: boolean;
 }
 
 export const models: AiModel[] = [
@@ -33,4 +34,10 @@ export const models: AiModel[] = [
     description: '(고비용)대부분의 업무에 탁월함',
     cost: 'high'
   },
+  {
+    id: 'claude-3-5-sonnet-20240620',
+    name: 'Claude 3.5 Sonnet',
+    description: 'Anthropic의 가장 지능적인 모델',
+    cost: 'high'
+  }
 ]; 
