@@ -23,15 +23,17 @@ const uuidRight = ref(crypto.randomUUID());
 const chatTurnCount = ref(0);
 const MAX_TURNS = 5;
 const chatTitle = ref('');
+const chatHistory = ref<string[]>(['검색 결과의 활용 방안', '최근 배포 관련 이슈']);
 
 let messageCounter = 0;
+let abortController: AbortController | null = null;
 
 const chatMessagesContainerLeft = ref<HTMLElement | null>(null);
 const chatMessagesContainerRight = ref<HTMLElement | null>(null);
 
 const isLoading = ref(false);
 const authStore = useAuthStore();
-const isRightPanelActive = ref(true);
+const isRightPanelActive = ref(false);
 
 const setInitialMessage = (side: 'left' | 'right') => {
   const text = newWelcomeText;
@@ -54,16 +56,40 @@ const handleToggleRightPanel = () => {
 
 onMounted(() => {
   setInitialMessage('left');
-  setInitialMessage('right');
+  if (isRightPanelActive.value) {
+    setInitialMessage('right');
+  }
 });
 
 const startNewChat = () => {
+  if (isLoading.value && abortController) {
+    abortController.abort();
+    abortController = null;
+  }
   setInitialMessage('left');
-  setInitialMessage('right');
+  if (isRightPanelActive.value) {
+    setInitialMessage('right');
+  } else {
+    messagesRight.value = [];
+  }
   uuidLeft.value = crypto.randomUUID();
   uuidRight.value = crypto.randomUUID();
   chatTurnCount.value = 0;
   chatTitle.value = '';
+};
+
+const handleRenameChat = (index: number) => {
+  const currentTitle = chatHistory.value[index];
+  const newTitle = prompt('새로운 채팅 제목을 입력하세요:', currentTitle);
+  if (newTitle && newTitle.trim() !== '') {
+    chatHistory.value[index] = newTitle.trim();
+  }
+};
+
+const handleDeleteChat = (index: number) => {
+  if (confirm(`'${chatHistory.value[index]}' 채팅을 삭제하시겠습니까?`)) {
+    chatHistory.value.splice(index, 1);
+  }
 };
 
 const scrollToBottom = (container: 'left' | 'right') => {
@@ -81,8 +107,10 @@ const handleSendMessage = async (text: string) => {
   }
   if (chatTurnCount.value === 0) {
     chatTitle.value = text;
+    chatHistory.value.unshift(text);
   }
   isLoading.value = true;
+  abortController = new AbortController();
   chatTurnCount.value++;
 
   // Add user message to both panes
@@ -107,6 +135,7 @@ const handleSendMessage = async (text: string) => {
     uuid: uuidLeft.value,
     model: modelLeft.value.id,
     userId: authStore.user?.id,
+    signal: abortController.signal,
     onMessage: (content) => {
       const msg = messagesLeft.value.find((m: Message) => m.id === aiLeftMessageId);
       if (msg) {
@@ -141,6 +170,7 @@ const handleSendMessage = async (text: string) => {
       uuid: uuidRight.value,
       model: modelRight.value.id,
       userId: authStore.user?.id,
+      signal: abortController.signal,
       onMessage: (content) => {
         const msg = messagesRight.value.find((m: Message) => m.id === aiRightMessageId);
         if (msg) {
@@ -168,6 +198,7 @@ const handleSendMessage = async (text: string) => {
     await Promise.allSettled([leftPromise, rightPromise]);
   } finally {
     isLoading.value = false;
+    abortController = null;
   }
 };
 </script>
@@ -175,7 +206,12 @@ const handleSendMessage = async (text: string) => {
 <template>
   <div class="chat-container">
     <aside class="sidebar">
-      <SidebarMenu @new-chat="startNewChat" />
+      <SidebarMenu
+        @new-chat="startNewChat"
+        :chat-history="chatHistory"
+        @rename-chat="handleRenameChat"
+        @delete-chat="handleDeleteChat"
+      />
     </aside>
     <main class="chat-area">
       <CommonHeader @toggle-right-panel="handleToggleRightPanel" />

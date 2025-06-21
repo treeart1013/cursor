@@ -28,7 +28,7 @@ const handleLogin = async () => {
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h1>사내 Wiki AI 검색</h1>
+      <h1>챗몬(Chatmon)</h1>
       <form @submit.prevent="handleLogin">
         <div class="input-group">
           <label for="username">ID</label>

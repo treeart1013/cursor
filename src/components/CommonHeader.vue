@@ -2,7 +2,7 @@
   <header class="common-header">
     <h1 class="title">챗몬(Chatmon)</h1>
     <div class="header-right">
-      <button @click="toggleRightPanel" class="toggle-button" :class="{ active: isRightPanelEnabled }">
+      <button @click="toggleRightPanel" class="toggle-button" :class="{ active: !isRightPanelEnabled }">
         모델 비교 {{ isRightPanelEnabled ? '끄기' : '켜기' }}
       </button>
       <span class="username" v-if="authStore.user">{{ authStore.user.name }}님</span>
@@ -18,7 +18,7 @@ import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
 const router = useRouter();
-const isRightPanelEnabled = ref(true);
+const isRightPanelEnabled = ref(false);
 
 const emit = defineEmits(['toggle-right-panel']);
 
@@ -73,7 +73,7 @@ const toggleRightPanel = () => {
 }
 
 .toggle-button.active {
-  background-color: #42b983;
+  background-color: #3a506b;
   color: white;
 }
 
@@ -83,6 +83,6 @@ const toggleRightPanel = () => {
 }
 
 .toggle-button.active:hover {
-  background-color: #38a873;
+  background-color: #34495e;
 }
 </style> 

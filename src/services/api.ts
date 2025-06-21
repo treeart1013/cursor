@@ -8,6 +8,7 @@ export interface FetchChatResponseParams {
   onMessage: (content: string) => void;
   onDone: () => void;
   onError: (error: Error) => void;
+  signal: AbortSignal;
 }
 
 export const fetchChatResponse = async ({
@@ -18,6 +19,7 @@ export const fetchChatResponse = async ({
   onMessage,
   onDone,
   onError,
+  signal,
 }: FetchChatResponseParams): Promise<void> => {
   const apiHost = import.meta.env.VITE_API_HOST;
   const url = `${apiHost}/agent/test?prompt=${encodeURIComponent(prompt)}&uuid=${encodeURIComponent(uuid)}&model=${encodeURIComponent(model)}`;
@@ -34,6 +36,7 @@ export const fetchChatResponse = async ({
     await fetchEventSource(url, {
       method: 'GET',
       headers,
+      signal,
       onmessage(ev) {
         if (ev.data === '[DONE]') {
           onDone();
@@ -50,6 +53,10 @@ export const fetchChatResponse = async ({
         onDone();
       },
       onerror(err) {
+        if (signal.aborted) {
+          onDone();
+          return;
+        }
         console.error("EventSource failed:", err);
         const error = new Error("AI 응답을 불러올 수 없습니다. 관리자에게 문의하세요.");
         onError(error);
@@ -59,7 +66,9 @@ export const fetchChatResponse = async ({
   } catch (err) {
     // This will catch errors thrown from onerror and other fatal errors
     if (err instanceof Error) {
+      if (err.name !== 'AbortError') {
         onError(err);
+      }
     } else {
         onError(new Error('An unknown error occurred'));
     }
