@@ -2,27 +2,27 @@
   <div class="chat-header">
     <span class="header-title">{{ title }}</span>
     <div class="model-selector" ref="dropdownRef">
-      <div class="model-info" @click="toggleDropdown">
+    <div class="model-info" @click="toggleDropdown">
         <span class="model-icon">🤖</span>
-        <span class="model-name">{{ modelValue.name }}</span>
-        <span class="dropdown-icon" :class="{ open: isOpen }">▼</span>
-      </div>
+      <span class="model-name">{{ modelValue.name }}</span>
+      <span class="dropdown-icon" :class="{ open: isOpen }">▼</span>
+    </div>
       <Transition name="slide-fade">
-        <div v-if="isOpen" class="dropdown-menu">
-          <ul>
-            <li v-for="model in availableModels" :key="model.id" @click="selectModel(model)">
-              <div class="model-details">
+      <div v-if="isOpen" class="dropdown-menu">
+        <ul>
+          <li v-for="model in availableModels" :key="model.id" @click="selectModel(model)">
+            <div class="model-details">
                 <div class="model-list-name-wrapper">
                   <span class="cost-dot" :class="model.cost"></span>
-                  <span class="model-list-name">{{ model.name }}</span>
+              <span class="model-list-name">{{ model.name }}</span>
                 </div>
-                <span class="model-description">{{ model.description }}</span>
-              </div>
-              <span v-if="model.id === modelValue.id" class="checkmark">✓</span>
-            </li>
-          </ul>
-        </div>
-      </Transition>
+              <span class="model-description">{{ model.description }}</span>
+            </div>
+            <span v-if="model.id === modelValue.id" class="checkmark">✓</span>
+          </li>
+        </ul>
+      </div>
+    </Transition>
     </div>
   </div>
 </template>
@@ -70,7 +70,6 @@ onUnmounted(() => {
 .chat-header {
   position: relative;
   padding: 15px 20px;
-  border-bottom: 1px solid var(--color-border);
   display: flex;
   justify-content: space-between;
   align-items: center;

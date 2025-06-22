@@ -56,15 +56,17 @@ const handleLogin = async () => {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: var(--color-background);
+  background-color: #1a1a1a;
 }
 .login-box {
-  width: 360px;
+  background-color: #2c2c2c;
   padding: 40px;
-  background-color: #2a2a2a;
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 450px;
   text-align: center;
+  border: 1px solid var(--color-border);
 }
 .login-logo-wrapper {
   margin-bottom: 32px;
@@ -78,33 +80,41 @@ const handleLogin = async () => {
 label {
   display: block;
   margin-bottom: 8px;
-  color: #aaa;
-  font-size: 0.9em;
+  color: #a0a0a0;
+  font-size: 1rem;
 }
 input {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   border-radius: 8px;
-  border: 1px solid var(--color-border);
+  border: 1px solid #444;
   background-color: #1e1e1e;
-  color: var(--color-text);
+  color: #fff;
   font-size: 1rem;
   box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+input::placeholder {
+  color: #777;
+}
+input:focus {
+  outline: none;
+  border-color: #4a90e2;
 }
 button {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   border: none;
   border-radius: 8px;
-  background-color: #2c3e50;
+  background-color: #3a506b;
   color: white;
   cursor: pointer;
   font-size: 1.1rem;
-  font-weight: 500;
+  font-weight: 600;
   transition: background-color 0.3s;
 }
 button:hover {
-  background-color: #3a506b;
+  background-color: #4a90e2;
 }
 button:disabled {
   opacity: 0.7;

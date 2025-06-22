@@ -68,7 +68,7 @@ defineProps<{
 .html-renderer th {
   background-color: #2a2a2a;
 }
-</style>
+</style> 
 
 <style scoped>
 .html-content {

@@ -57,7 +57,7 @@ const handleToggleRightPanel = () => {
 onMounted(() => {
   setInitialMessage('left');
   if (isRightPanelActive.value) {
-    setInitialMessage('right');
+  setInitialMessage('right');
   }
 });
 
@@ -68,7 +68,7 @@ const startNewChat = () => {
   }
   setInitialMessage('left');
   if (isRightPanelActive.value) {
-    setInitialMessage('right');
+  setInitialMessage('right');
   } else {
     messagesRight.value = [];
   }
@@ -118,11 +118,11 @@ const handleSendMessage = async (text: string) => {
   const userMessage: Message = { id: userMessageId, text, sender: 'user' };
   messagesLeft.value.push(userMessage);
   if (isRightPanelActive.value) {
-    messagesRight.value.push(userMessage);
+  messagesRight.value.push(userMessage);
   }
   scrollToBottom('left');
   if (isRightPanelActive.value) {
-    scrollToBottom('right');
+  scrollToBottom('right');
   }
 
   // --- Process Left Pane (O4-mini) ---
@@ -161,37 +161,37 @@ const handleSendMessage = async (text: string) => {
   // --- Process Right Pane (GPT-4o) ---
   let rightPromise: Promise<void | null> = Promise.resolve();
   if (isRightPanelActive.value) {
-    const aiRightMessageId = ++messageCounter;
-    messagesRight.value.push({ id: aiRightMessageId, text: '', sender: 'ai', typing: true, isHtml: true });
-    scrollToBottom('right');
-    
+  const aiRightMessageId = ++messageCounter;
+  messagesRight.value.push({ id: aiRightMessageId, text: '', sender: 'ai', typing: true, isHtml: true });
+  scrollToBottom('right');
+  
     rightPromise = fetchChatResponse({
-      prompt: text,
-      uuid: uuidRight.value,
-      model: modelRight.value.id,
+    prompt: text,
+    uuid: uuidRight.value,
+    model: modelRight.value.id,
       userId: authStore.user?.id,
       signal: abortController.signal,
-      onMessage: (content) => {
-        const msg = messagesRight.value.find((m: Message) => m.id === aiRightMessageId);
-        if (msg) {
-          if (msg.typing) msg.typing = false;
-          msg.text += content;
-          scrollToBottom('right');
-        }
-      },
-      onDone: () => {
-        const msg = messagesRight.value.find((m: Message) => m.id === aiRightMessageId);
-        if (msg) msg.typing = false;
-      },
-      onError: (error) => {
-        const msg = messagesRight.value.find((m: Message) => m.id === aiRightMessageId);
-        if (msg) {
-          msg.text = error.message;
-          msg.typing = false;
-          msg.error = true;
-        }
+    onMessage: (content) => {
+      const msg = messagesRight.value.find((m: Message) => m.id === aiRightMessageId);
+      if (msg) {
+        if (msg.typing) msg.typing = false;
+        msg.text += content;
+        scrollToBottom('right');
       }
-    });
+    },
+    onDone: () => {
+      const msg = messagesRight.value.find((m: Message) => m.id === aiRightMessageId);
+      if (msg) msg.typing = false;
+    },
+    onError: (error) => {
+      const msg = messagesRight.value.find((m: Message) => m.id === aiRightMessageId);
+      if (msg) {
+        msg.text = error.message;
+        msg.typing = false;
+        msg.error = true;
+      }
+    }
+  });
   }
 
   try {

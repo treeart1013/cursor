@@ -1,15 +1,15 @@
 <template>
   <div class="chat-input-wrapper">
     <div class="chat-input-container">
-      <textarea
+    <textarea
         ref="textareaRef"
-        v-model="message"
-        :placeholder="placeholderText"
-        @keydown="handleKeydown"
-        :disabled="isInputDisabled"
+      v-model="message"
+      :placeholder="placeholderText"
+      @keydown="handleKeydown"
+      :disabled="isInputDisabled"
         @input="adjustTextareaHeight"
         rows="1"
-      ></textarea>
+    ></textarea>
       <button 
         @click="submitMessage" 
         :disabled="isSubmitDisabled" 
