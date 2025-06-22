@@ -60,7 +60,7 @@ const handleLogin = async () => {
 }
 .login-box {
   background-color: #2c2c2c;
-  padding: 40px;
+  padding: 80px 40px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   width: 100%;

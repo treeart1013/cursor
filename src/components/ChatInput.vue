@@ -98,6 +98,8 @@ const adjustTextareaHeight = () => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  max-width: 70%;
+  margin: 0 auto;
 }
 
 .chat-input-container {

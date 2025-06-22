@@ -1,9 +1,22 @@
 <template>
-  <div class="sidebar-menu">
+  <div class="sidebar-menu" :class="{ collapsed: isCollapsed }">
+    <div class="sidebar-header">
+      <button class="icon-btn hamburger-btn" @click="emit('toggle-sidebar')" aria-label="메뉴 토글">☰</button>
+      <button v-if="!isCollapsed" class="icon-btn search-btn" aria-label="검색">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+    </div>
     <button class="new-chat-btn" @click="emit('new-chat')">
-      <span>+</span> 새 채팅
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+      </svg>
+      <span v-if="!isCollapsed" class="btn-text">새 채팅</span>
     </button>
-    <div class="menu-group" ref="menuGroupRef">
+    <div v-if="!isCollapsed" class="menu-group" ref="menuGroupRef">
       <h3 class="menu-title">채팅 목록</h3>
       <ul class="menu-list">
         <li
@@ -32,9 +45,10 @@ import { ref, onMounted, onUnmounted } from 'vue';
 
 defineProps<{
   chatHistory: string[];
+  isCollapsed: boolean;
 }>();
 
-const emit = defineEmits(['new-chat', 'rename-chat', 'delete-chat']);
+const emit = defineEmits(['new-chat', 'rename-chat', 'delete-chat', 'toggle-sidebar']);
 
 const openedMenuIndex = ref<number | null>(null);
 const menuGroupRef = ref<HTMLElement | null>(null);
@@ -72,7 +86,41 @@ onUnmounted(() => {
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  margin-bottom: 8px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: #a0a0a0;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.icon-btn:hover {
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+.search-btn svg {
+  width: 22px;
+  height: 22px;
 }
 
 .new-chat-btn {
@@ -86,11 +134,27 @@ onUnmounted(() => {
   font-size: 1rem;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  transition: background-color 0.2s;
 }
 
 .new-chat-btn:hover {
   background-color: #3a506b;
+}
+
+.sidebar-menu.collapsed .new-chat-btn {
+  justify-content: center;
+  padding: 10px;
+}
+
+.btn-text {
+  transition: opacity 0.2s;
+}
+
+.sidebar-menu.collapsed .btn-text {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
 }
 
 .menu-group {

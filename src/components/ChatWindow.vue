@@ -94,6 +94,8 @@ defineProps<{
 
 .message-container.message-user .message-bubble {
   background-color: #3a506b;
+  white-space: pre-wrap;
+  padding: 4px 18px;
 }
 
 .error-message {

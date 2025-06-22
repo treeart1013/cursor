@@ -8,6 +8,7 @@ import ChatInput from '@/components/ChatInput.vue'
 import { useChat } from '@/composables/useChat';
 
 // --- 상태 (State) ---
+const isSidebarCollapsed = ref(false); // 사이드바 축소 상태
 const isBannerVisible = ref(true); // 상단 배너 표시 여부 상태
 const infoText = ref('<p>데모용으로 현재는 <span class="highlight">위키</span>만 지원합니다. 사용 후기 및 피드백 환영합니다.</p><p>자연어 질의에 대한 <span class="highlight">품질 개선</span>(응답속도, 정확도 등) 검토 예정이며, 조만간 <span class="highlight">아지트</span>도 지원할 예정입니다.</p>');
 
@@ -42,6 +43,13 @@ const chatHistory = ref<string[]>(['검색 결과의 활용 방안', '최근 배
  */
 const closeBanner = () => {
   isBannerVisible.value = false;
+};
+
+/**
+ * 사이드바의 열림/닫힘 상태를 토글하는 함수
+ */
+const toggleSidebar = () => {
+  isSidebarCollapsed.value = !isSidebarCollapsed.value;
 };
 
 /**
@@ -106,12 +114,14 @@ const handleSendMessage = async (text: string) => {
 
 <template>
   <div class="chat-container">
-    <aside class="sidebar">
+    <aside class="sidebar" :class="{ collapsed: isSidebarCollapsed }">
       <SidebarMenu
         @new-chat="startNewChat"
         :chat-history="chatHistory"
         @rename-chat="handleRenameChat"
         @delete-chat="handleDeleteChat"
+        :is-collapsed="isSidebarCollapsed"
+        @toggle-sidebar="toggleSidebar"
       />
     </aside>
     <main class="chat-area">
@@ -174,6 +184,12 @@ const handleSendMessage = async (text: string) => {
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--color-border);
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 88px;
+  padding: 20px 16px;
 }
 
 .chat-area {
@@ -230,11 +246,13 @@ const handleSendMessage = async (text: string) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #3a506b;
+  padding: 12px 20px;
+  background-color: #1e293b;
   color: #e0e0e0;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   line-height: 1.5;
+  border-radius: 12px;
+  margin: 16px 20px 8px;
 }
 
 .info-banner-content {
@@ -249,7 +267,7 @@ const handleSendMessage = async (text: string) => {
 }
 
 .info-banner-content :deep(.highlight) {
-  color: #ffe490;
+  color: #fb923c;
   font-weight: 600;
 }
 
