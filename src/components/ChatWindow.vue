@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import TypingIndicator from './TypingIndicator.vue';
 import HtmlRenderer from './HtmlRenderer.vue';
 import type { Message } from '@/types/models';
@@ -33,24 +32,6 @@ import ChatmonLogo from './ChatmonLogo.vue';
 defineProps<{
   messages: Message[];
 }>();
-
-const copiedMessageId = ref<number | null>(null);
-
-const copyToClipboard = async (message: Message) => {
-  if (copiedMessageId.value === message.id) return;
-
-  try {
-    const plainText = new DOMParser().parseFromString(message.text, 'text/html').documentElement.textContent || '';
-    await navigator.clipboard.writeText(plainText);
-    copiedMessageId.value = message.id;
-    setTimeout(() => {
-      copiedMessageId.value = null;
-    }, 2000);
-  } catch (err) {
-    console.error('클립보드 복사 실패:', err);
-    alert('클립보드 복사에 실패했습니다.');
-  }
-};
 </script>
 
 <style scoped>

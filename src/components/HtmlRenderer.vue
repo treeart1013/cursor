@@ -1,11 +1,77 @@
 <template>
-  <div class="html-renderer" v-html="htmlContent"></div>
+  <div ref="contentRef" class="html-content" v-html="htmlContent"></div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue';
+
 defineProps<{
   htmlContent: string;
 }>();
+
+const contentRef = ref<HTMLDivElement | null>(null);
+
+/**
+ * 코드 블록에 'Copy' 버튼을 추가하는 함수
+ */
+const addCopyButtons = () => {
+  const container = contentRef.value;
+  if (!container) return;
+
+  container.querySelectorAll('pre').forEach((pre) => {
+    // 이미 버튼이 있다면 중복 생성 방지
+    if (pre.querySelector('.copy-code-btn')) {
+      return;
+    }
+    
+    const button = document.createElement('button');
+    button.className = 'copy-code-btn';
+    button.textContent = 'Copy';
+    
+    pre.appendChild(button);
+  });
+};
+
+/**
+ * 'Copy' 버튼 클릭 이벤트를 위임하여 처리
+ * @param event - MouseEvent
+ */
+const handleCopyClick = (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  if (target.classList.contains('copy-code-btn')) {
+    const pre = target.closest('pre');
+    const code = pre?.querySelector('code')?.innerText;
+    if (code) {
+      navigator.clipboard.writeText(code).then(() => {
+        target.textContent = 'Copied!';
+        setTimeout(() => {
+          target.textContent = 'Copy';
+        }, 2000);
+      });
+    }
+  }
+};
+
+// 컴포넌트가 마운트되거나 업데이트될 때 버튼을 추가하고 이벤트 리스너를 설정
+// (v-html은 DOM을 직접 변경하므로, Vue의 생명주기 훅을 신중하게 사용해야 함)
+onMounted(() => {
+  const observer = new MutationObserver(() => {
+    addCopyButtons();
+  });
+  
+  if (contentRef.value) {
+    addCopyButtons(); // 초기 렌더링 시 버튼 추가
+    observer.observe(contentRef.value, { childList: true, subtree: true });
+    contentRef.value.addEventListener('click', handleCopyClick);
+  }
+
+  onUnmounted(() => {
+    observer.disconnect();
+    if (contentRef.value) {
+      contentRef.value.removeEventListener('click', handleCopyClick);
+    }
+  });
+});
 </script>
 
 <style>

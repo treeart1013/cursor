@@ -1,3 +1,8 @@
+/**
+ * @fileoverview 채팅 관련 로직과 상태를 관리하는 컴포저블 함수입니다.
+ * @author owen.kim
+ */
+
 import { ref, nextTick } from 'vue';
 import type { Ref } from 'vue';
 import { fetchChatResponse } from '@/services/api';

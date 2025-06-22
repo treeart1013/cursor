@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Chatmon 애플리케이션의 메인 진입점입니다.
+ * @author owen.kim
+ */
+
 import './assets/main.css'
 
 import { createApp } from 'vue'
