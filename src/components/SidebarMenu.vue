@@ -16,7 +16,7 @@
       </svg>
       <span v-if="!isCollapsed" class="btn-text">새 채팅</span>
     </button>
-    <div v-if="!isCollapsed" class="menu-group" ref="menuGroupRef">
+    <div class="menu-group" ref="menuGroupRef">
       <h3 class="menu-title">채팅 목록</h3>
       <ul class="menu-list">
         <li
@@ -87,6 +87,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
 }
 
 .sidebar-header {
@@ -147,6 +148,10 @@ onUnmounted(() => {
   padding: 10px;
 }
 
+.sidebar-menu.collapsed .sidebar-header {
+  justify-content: center;
+}
+
 .btn-text {
   transition: opacity 0.2s;
 }
@@ -158,6 +163,9 @@ onUnmounted(() => {
 }
 
 .menu-group {
+  flex-grow: 1;
+  overflow-y: auto;
+  transition: opacity 0.2s ease;
 }
 
 .menu-title {
@@ -253,5 +261,21 @@ onUnmounted(() => {
 
 .context-menu button.delete:hover {
   background-color: #5e3a3a;
+}
+
+.sidebar-menu.collapsed .menu-group {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition-delay: 0s;
+}
+
+.sidebar-menu:not(.collapsed) .menu-group {
+  transition-delay: 0.2s; /* Wait for sidebar to expand */
+}
+
+.sidebar-menu.collapsed .menu-title,
+.sidebar-menu.collapsed .menu-list {
+  display: none;
 }
 </style> 
