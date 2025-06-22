@@ -11,7 +11,7 @@
           :key="index"
           :class="{ active: openedMenuIndex === index }"
         >
-          <span class="chat-title">{{ item }}</span>
+          <span class="chat-title" :title="item">{{ item }}</span>
           <button class="more-btn" @click.stop="toggleMenu(index)">⋯</button>
           <div v-if="openedMenuIndex === index" class="context-menu">
             <button @click="emitRename(index)">
@@ -121,6 +121,7 @@ onUnmounted(() => {
 }
 
 .chat-title {
+  max-width: 220px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

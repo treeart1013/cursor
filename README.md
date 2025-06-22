@@ -61,7 +61,7 @@ API 호스트는 `VITE_API_HOST` 변수를 통해 설정됩니다. 이 변수를
   ```
   VITE_API_HOST=http://dev-api.your-domain.com
   ```
-- **`.env.qa` (QA 환경용)**
+- **`.env.production` (운영 환경용)**
   ```
   VITE_API_HOST=http://qa-api.your-domain.com
   ```

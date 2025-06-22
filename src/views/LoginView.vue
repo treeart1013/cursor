@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import ChatmonLogo from '@/components/ChatmonLogo.vue';
 
 const username = ref('');
 const password = ref('');
@@ -28,7 +29,9 @@ const handleLogin = async () => {
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h1>챗몬(Chatmon)</h1>
+      <div class="login-logo-wrapper">
+        <ChatmonLogo />
+      </div>
       <form @submit.prevent="handleLogin">
         <div class="input-group">
           <label for="username">ID</label>
@@ -63,9 +66,10 @@ const handleLogin = async () => {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   text-align: center;
 }
-h1 {
-  color: var(--color-heading);
-  margin-bottom: 24px;
+.login-logo-wrapper {
+  margin-bottom: 32px;
+  transform: scale(1.5);
+  display: inline-block;
 }
 .input-group {
   margin-bottom: 20px;
@@ -109,5 +113,12 @@ button:disabled {
 .error-message {
   color: #e57373;
   margin-bottom: 16px;
+}
+.login-logo-wrapper :deep(.logo-text) {
+  font-size: 2.2rem;
+}
+.login-logo-wrapper :deep(.logo-icon) {
+  width: 48px;
+  height: 48px;
 }
 </style> 

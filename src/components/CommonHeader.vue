@@ -1,6 +1,6 @@
 <template>
   <header class="common-header">
-    <h1 class="title">챗몬(Chatmon)</h1>
+    <ChatmonLogo />
     <div class="header-right">
       <button @click="toggleRightPanel" class="toggle-button" :class="{ active: !isRightPanelEnabled }">
         모델 비교 {{ isRightPanelEnabled ? '끄기' : '켜기' }}
@@ -15,6 +15,7 @@
 import { ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
+import ChatmonLogo from './ChatmonLogo.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -42,11 +43,6 @@ const toggleRightPanel = () => {
   background-color: #1E1E1E;
   color: var(--color-text);
   border-bottom: 1px solid var(--color-border);
-}
-
-.title {
-  margin: 0;
-  font-size: 1.2rem;
 }
 
 .header-right {

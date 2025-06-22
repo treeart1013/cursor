@@ -3,15 +3,19 @@
     <span class="header-title">{{ title }}</span>
     <div class="model-selector" ref="dropdownRef">
       <div class="model-info" @click="toggleDropdown">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="model-icon"><path d="M12 2a2.83 2.83 0 0 0-2 5 2.83 2.83 0 0 0-2 5 2.83 2.83 0 0 0 2 5 2.83 2.83 0 0 0 2 5 2.83 2.83 0 0 0 2-5 2.83 2.83 0 0 0 2-5Z"/><path d="M6.34 7.34 4.5 9.5l-2-2.5"/><path d="m17.66 7.34 1.84 2.16 2-2.5"/><path d="m17.66 16.66 1.84-2.16 2 2.5"/><path d="M6.34 16.66 4.5 14.5l-2 2.5"/></svg>
         <span class="model-name">{{ modelValue.name }}</span>
         <span class="dropdown-icon" :class="{ open: isOpen }">▼</span>
       </div>
-      <Transition name="fade">
+      <Transition name="slide-fade">
         <div v-if="isOpen" class="dropdown-menu">
           <ul>
             <li v-for="model in availableModels" :key="model.id" @click="selectModel(model)">
               <div class="model-details">
-                <span class="model-list-name">{{ model.name }}</span>
+                <div class="model-list-name-wrapper">
+                  <span class="cost-dot" :class="model.cost"></span>
+                  <span class="model-list-name">{{ model.name }}</span>
+                </div>
                 <span class="model-description">{{ model.description }}</span>
               </div>
               <span v-if="model.id === modelValue.id" class="checkmark">✓</span>
@@ -90,11 +94,25 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
+  background-color: #2c2c2c;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.model-info:hover {
+  border-color: var(--color-border-hover);
+  background-color: #333;
+}
+
+.model-icon {
+  color: #9e9e9e;
 }
 
 .model-name {
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-weight: 500;
+  font-size: 1rem;
 }
 
 .dropdown-icon {
@@ -111,13 +129,14 @@ onUnmounted(() => {
   top: 100%;
   right: 0;
   margin-top: 8px;
-  width: 280px;
-  background-color: #2a2a2a;
+  width: 300px;
+  background-color: #252525;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   z-index: 10;
   padding: 8px;
+  overflow: hidden;
 }
 
 .dropdown-menu ul {
@@ -133,6 +152,7 @@ onUnmounted(() => {
   padding: 12px 16px;
   cursor: pointer;
   border-radius: 6px;
+  transition: background-color 0.2s;
 }
 
 .dropdown-menu li:hover {
@@ -142,6 +162,28 @@ onUnmounted(() => {
 .model-details {
   display: flex;
   flex-direction: column;
+  gap: 4px;
+}
+
+.model-list-name-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.cost-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.cost-dot.low {
+  background-color: #42b983; /* Vue green */
+}
+
+.cost-dot.high {
+  background-color: #f6ad55; /* Orange */
 }
 
 .model-list-name {
@@ -158,13 +200,14 @@ onUnmounted(() => {
   font-size: 1.2rem;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.2s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(-10px);
   opacity: 0;
 }
 </style> 
