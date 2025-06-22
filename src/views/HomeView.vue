@@ -253,17 +253,18 @@ const handleSendMessage = async (text: string) => {
 
 .chat-container {
   display: flex;
-  height: 100%;
+  height: calc(100vh - 57px);
   width: 100%;
 }
 
 .sidebar {
-  flex: 0 0 20%;
-  background-color: #161616;
+  width: 280px;
+  flex-shrink: 0;
+  background-color: #1e1e1e;
   padding: 20px;
-  color: #ededed;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid var(--color-border);
 }
 
 .chat-area {
@@ -293,7 +294,6 @@ const handleSendMessage = async (text: string) => {
   background-color: #1E1E1E;
   border: 2px solid transparent;
   overflow-y: hidden;
-  min-width: 0; /* flexbox 아이템 축소 허용 */
 }
 
 .chat-messages {
@@ -305,6 +305,15 @@ const handleSendMessage = async (text: string) => {
 
 .chat-input-container {
   padding: 20px;
-  border-top: 1px solid var(--color-border);
+}
+
+.chat-window-wrapper {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.chat-input-wrapper {
+  padding: 16px;
 }
 </style>

@@ -68,4 +68,60 @@ defineProps<{
 .html-renderer th {
   background-color: #2a2a2a;
 }
+</style>
+
+<style scoped>
+.html-content {
+  line-height: 1.4;
+}
+
+.html-content :deep(p) {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.html-content :deep(h2) {
+  font-size: 1.15em;
+  font-weight: 600;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+.html-content :deep(h3) {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.4em;
+}
+
+.html-content :deep(ul),
+.html-content :deep(ol) {
+  padding-left: 24px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.html-content :deep(li) {
+  margin-bottom: 0.2em;
+}
+
+.html-content :deep(code) {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.html-content :deep(pre) {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-top: 0.5em;
+}
+
+.html-content :deep(pre code) {
+  padding: 0;
+  background-color: transparent;
+}
 </style> 

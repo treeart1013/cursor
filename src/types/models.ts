@@ -33,11 +33,5 @@ export const models: AiModel[] = [
     name: 'GPT-4o',
     description: '(고비용)대부분의 업무에 탁월함',
     cost: 'high'
-  },
-  {
-    id: 'claude-3-5-sonnet-20240620',
-    name: 'Claude 3.5 Sonnet',
-    description: 'Anthropic의 가장 지능적인 모델',
-    cost: 'high'
   }
 ]; 

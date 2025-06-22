@@ -3,7 +3,7 @@
     <span class="header-title">{{ title }}</span>
     <div class="model-selector" ref="dropdownRef">
       <div class="model-info" @click="toggleDropdown">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="model-icon"><path d="M12 2a2.83 2.83 0 0 0-2 5 2.83 2.83 0 0 0-2 5 2.83 2.83 0 0 0 2 5 2.83 2.83 0 0 0 2 5 2.83 2.83 0 0 0 2-5 2.83 2.83 0 0 0 2-5Z"/><path d="M6.34 7.34 4.5 9.5l-2-2.5"/><path d="m17.66 7.34 1.84 2.16 2-2.5"/><path d="m17.66 16.66 1.84-2.16 2 2.5"/><path d="M6.34 16.66 4.5 14.5l-2 2.5"/></svg>
+        <span class="model-icon">🤖</span>
         <span class="model-name">{{ modelValue.name }}</span>
         <span class="dropdown-icon" :class="{ open: isOpen }">▼</span>
       </div>
@@ -107,7 +107,8 @@ onUnmounted(() => {
 }
 
 .model-icon {
-  color: #9e9e9e;
+  font-size: 1.2rem;
+  line-height: 1;
 }
 
 .model-name {

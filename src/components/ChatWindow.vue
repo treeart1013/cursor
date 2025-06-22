@@ -68,8 +68,7 @@ const copyToClipboard = async (message: Message) => {
   border-radius: 18px;
   max-width: 80%;
   word-wrap: break-word;
-  line-height: 1.6;
-  white-space: pre-wrap;
+  line-height: 1.45;
 }
 
 .message.user {
@@ -77,6 +76,7 @@ const copyToClipboard = async (message: Message) => {
   color: #fff;
   align-self: flex-end;
   margin-left: auto;
+  white-space: pre-wrap;
 }
 
 .message.ai {
