@@ -1,22 +1,23 @@
 <template>
   <div class="chat-window">
-    <div v-for="message in messages" :key="message.id" class="message-container">
-      <div :class="['message', message.sender, { 'initial-message': message.isInitial }]">
-        <TypingIndicator v-if="message.typing" />
-        <HtmlRenderer v-else-if="message.isHtml" :html-content="message.text" />
-        <span v-else>{{ message.text }}</span>
-        <div v-if="message.error" class="error-message">{{ message.text }}</div>
+    <div v-for="message in messages" :key="message.id" class="message-wrapper">
+      <!-- Case 1: 초기 웰컴 메시지 -->
+      <div v-if="message.isInitial" class="initial-message">
+        <ChatmonLogo :is-small="false" />
+        <HtmlRenderer :htmlContent="message.text" />
+      </div>
 
-        <button 
-          v-if="message.sender === 'ai' && !message.typing && !message.error && message.text"
-          @click="copyToClipboard(message)"
-          class="copy-btn"
-          :class="{ 'copied': copiedMessageId === message.id }"
-          :title="copiedMessageId === message.id ? '복사됨' : '내용 복사'"
-        >
-          <span v-if="copiedMessageId === message.id">✓</span>
-          <span v-else>📋</span>
-        </button>
+      <!-- Case 2: 일반 대화 메시지 (사용자 & AI) -->
+      <div v-else :class="['message-container', `message-${message.sender}`]">
+        <div v-if="message.sender === 'ai'" class="avatar">🤖</div>
+        <div class="message-bubble">
+          <TypingIndicator v-if="message.typing" />
+          <HtmlRenderer v-else-if="message.isHtml" :htmlContent="message.text" />
+          <p v-else>{{ message.text }}</p>
+          <div v-if="message.error" class="error-message">
+            <p>오류가 발생했습니다: {{ message.text }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -27,6 +28,7 @@ import { ref } from 'vue';
 import TypingIndicator from './TypingIndicator.vue';
 import HtmlRenderer from './HtmlRenderer.vue';
 import type { Message } from '@/types/models';
+import ChatmonLogo from './ChatmonLogo.vue';
 
 defineProps<{
   messages: Message[];
@@ -55,82 +57,66 @@ const copyToClipboard = async (message: Message) => {
 .chat-window {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+}
+
+.message-wrapper {
+  margin-bottom: 24px;
+}
+
+.initial-message {
+  text-align: center;
+  color: #a0a0a0;
+  padding: 20px;
+}
+
+.initial-message > :deep(p) {
+  margin: 8px 0;
 }
 
 .message-container {
   display: flex;
+  max-width: 85%;
+  align-items: flex-end;
 }
 
-.message {
-  position: relative;
-  padding: 12px 18px;
-  border-radius: 18px;
-  max-width: 80%;
-  word-wrap: break-word;
-  line-height: 1.45;
-}
-
-.message.user {
-  background-color: #3a506b;
-  color: #fff;
-  align-self: flex-end;
+.message-container.message-user {
   margin-left: auto;
-  white-space: pre-wrap;
+  flex-direction: row-reverse;
 }
 
-.message.ai {
-  background-color: #2a2a2a;
-  color: var(--color-text);
-  align-self: flex-start;
+.message-container.message-ai {
   margin-right: auto;
 }
 
-.copy-btn {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  margin: 0 10px;
+}
+
+.message-bubble {
+  padding: 12px 18px;
+  border-radius: 20px;
+  position: relative;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  background-color: #333;
   color: #fff;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.8em;
-  opacity: 0;
-  transition: opacity 0.2s, background-color 0.2s;
 }
 
-.message.ai:hover .copy-btn {
-  opacity: 1;
-}
-
-.copy-btn.copied,
-.message.ai:hover .copy-btn.copied {
-  background-color: #4caf50;
-  opacity: 1;
-}
-
-.initial-message {
-  background-color: #2a2a2a;
-  width: 100%;
-  max-width: 100%;
-  padding: 20px;
-  text-align: left;
-}
-
-.initial-message :deep(p) {
-  margin: 5px 0;
-  color: var(--color-text);
-}
-
-.initial-message :deep(.highlight) {
-  color: #ffe490;
-  font-weight: bold;
+.message-container.message-user .message-bubble {
+  background-color: #3a506b;
 }
 
 .error-message {
-  color: #ff5c5c;
-  font-size: 0.9em;
+  color: #ff6b6b;
+  margin-top: 8px;
 }
 </style> 

@@ -2,27 +2,30 @@
   <div class="chat-header">
     <span class="header-title">{{ title }}</span>
     <div class="model-selector" ref="dropdownRef">
-    <div class="model-info" @click="toggleDropdown">
+      <!-- 현재 선택된 모델 정보 표시 및 드롭다운 토글 버튼 -->
+      <div class="model-info" @click="toggleDropdown">
         <span class="model-icon">🤖</span>
-      <span class="model-name">{{ modelValue.name }}</span>
-      <span class="dropdown-icon" :class="{ open: isOpen }">▼</span>
-    </div>
+        <span class="model-name">{{ modelValue.name }}</span>
+        <span class="dropdown-icon" :class="{ open: isOpen }">▼</span>
+      </div>
+      <!-- 모델 선택 드롭다운 메뉴 -->
       <Transition name="slide-fade">
-      <div v-if="isOpen" class="dropdown-menu">
-        <ul>
-          <li v-for="model in availableModels" :key="model.id" @click="selectModel(model)">
-            <div class="model-details">
+        <div v-if="isOpen" class="dropdown-menu">
+          <ul>
+            <li v-for="model in availableModels" :key="model.id" @click="selectModel(model)">
+              <div class="model-details">
                 <div class="model-list-name-wrapper">
                   <span class="cost-dot" :class="model.cost"></span>
-              <span class="model-list-name">{{ model.name }}</span>
+                  <span class="model-list-name">{{ model.name }}</span>
                 </div>
-              <span class="model-description">{{ model.description }}</span>
-            </div>
-            <span v-if="model.id === modelValue.id" class="checkmark">✓</span>
-          </li>
-        </ul>
-      </div>
-    </Transition>
+                <span class="model-description">{{ model.description }}</span>
+              </div>
+              <!-- 현재 선택된 모델에 체크마크 표시 -->
+              <span v-if="model.id === modelValue.id" class="checkmark">✓</span>
+            </li>
+          </ul>
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -32,35 +35,54 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import type { AiModel } from '@/types/models';
 import { models as availableModels } from '@/types/models';
 
-const props = defineProps<{
-  modelValue: AiModel;
-  title: string;
+// --- Props ---
+// v-model을 위해 modelValue prop을 정의
+defineProps<{
+  modelValue: AiModel; // 현재 선택된 AI 모델 객체
+  title: string;       // 채팅 헤더에 표시될 제목
 }>();
 
+// --- Emits ---
+// v-model을 위해 update:modelValue 이벤트를 정의
 const emit = defineEmits(['update:modelValue']);
 
-const isOpen = ref(false);
-const dropdownRef = ref<HTMLElement | null>(null);
+// --- State ---
+const isOpen = ref(false); // 드롭다운 메뉴의 열림/닫힘 상태
+const dropdownRef = ref<HTMLElement | null>(null); // 드롭다운 DOM 요소 참조
 
+// --- Methods ---
+/**
+ * 드롭다운 메뉴를 열고 닫음
+ */
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 
+/**
+ * 새로운 AI 모델을 선택하고, 부모 컴포넌트로 이벤트를 발생시킴
+ * @param model - 사용자가 선택한 AI 모델 객체
+ */
 const selectModel = (model: AiModel) => {
-  emit('update:modelValue', model);
-  isOpen.value = false;
+  emit('update:modelValue', model); // v-model 업데이트
+  isOpen.value = false; // 드롭다운 닫기
 };
 
+/**
+ * 드롭다운 외부 영역 클릭 시 드롭다운을 닫는 이벤트 핸들러
+ * @param event - MouseEvent
+ */
 const handleClickOutside = (event: MouseEvent) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
     isOpen.value = false;
   }
 };
 
+// 컴포넌트 마운트 시 document에 클릭 이벤트 리스너 추가
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
 });
 
+// 컴포넌트 언마운트 시 이벤트 리스너 제거 (메모리 누수 방지)
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });

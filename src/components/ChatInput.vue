@@ -13,77 +13,82 @@
       <button 
         @click="submitMessage" 
         :disabled="isSubmitDisabled" 
-        class="send-btn"
-        title="전송"
+        class="send-button"
+        aria-label="Send message"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-        </svg>
+        <span class="send-icon">▲</span>
       </button>
     </div>
-    <div class="input-footer">
-      <span class="turn-counter">남은 질문: {{ maxTurns - turnCount }}회</span>
+    <div class="turn-indicator">
+      대화 턴 {{ turnCount }} / {{ maxTurns }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 
+// --- Props ---
 const props = defineProps<{
-  turnCount: number;
-  maxTurns: number;
-  isLoading: boolean;
+  turnCount: number; // 현재 대화 턴 수
+  maxTurns: number;  // 최대 대화 턴 수
+  isLoading: boolean; // 부모 컴포넌트(HomeView)의 로딩 상태
 }>();
 
-const message = ref('');
+// --- Emits ---
 const emit = defineEmits(['sendMessage']);
-const textareaRef = ref<HTMLTextAreaElement | null>(null);
 
-const adjustTextareaHeight = () => {
-  if (textareaRef.value) {
-    textareaRef.value.style.height = 'auto';
-    textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`;
-  }
-};
+// --- State ---
+const message = ref(''); // 사용자가 입력한 메시지
+const textareaRef = ref<HTMLTextAreaElement | null>(null); // textarea의 DOM 참조
 
-watch(message, () => {
-  nextTick(adjustTextareaHeight);
-});
-
-const isInputDisabled = computed(() => props.isLoading);
-const isSubmitDisabled = computed(() => message.value.trim() === '' || props.turnCount >= props.maxTurns || props.isLoading);
-
+// --- Computed ---
+// 입력창 비활성화 여부 계산. 로딩 중이거나 최대 턴에 도달하면 true.
+const isInputDisabled = computed(() => props.isLoading || props.turnCount >= props.maxTurns);
+// 전송 버튼 비활성화 여부 계산. 입력창이 비활성화 상태이거나 메시지가 비어있으면 true.
+const isSubmitDisabled = computed(() => isInputDisabled.value || message.value.trim() === '');
+// 입력창 placeholder 텍스트 계산.
 const placeholderText = computed(() => {
-  if (props.turnCount >= props.maxTurns) {
-    return '최대 질문 횟수에 도달했습니다. 새 채팅을 시작해주세요.';
-  }
-  if (props.isLoading) {
-    return '응답을 기다리는 중...';
-  }
+  if (props.isLoading) return 'AI가 답변 중입니다...';
+  if (props.turnCount >= props.maxTurns) return `최대 ${props.maxTurns}턴까지 대화할 수 있습니다.`;
   return '메시지를 입력하세요...';
 });
 
+// --- Methods ---
+/**
+ * 메시지를 부모 컴포넌트로 전송
+ */
 const submitMessage = () => {
-  if (message.value.trim() === '' || isInputDisabled.value) return;
+  if (isSubmitDisabled.value) return;
   emit('sendMessage', message.value);
-  message.value = '';
-  nextTick(adjustTextareaHeight);
+  message.value = ''; // 메시지 초기화
+  nextTick(adjustTextareaHeight); // 높이 재조정
 };
 
+/**
+ * 키보드 이벤트 핸들러. Shift+Enter는 줄바꿈, Enter는 메시지 전송.
+ * @param {KeyboardEvent} event
+ */
 const handleKeydown = (event: KeyboardEvent) => {
-  if (isInputDisabled.value) return;
-
+  // isComposing이 true이면, 아직 한글 등 조합 문자가 완성되지 않은 상태이므로,
+  // Enter 키 입력을 무시하여 마지막 글자가 누락되는 현상을 방지.
   if (event.isComposing) {
     return;
   }
-
   if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
+    event.preventDefault(); // 기본 동작(줄바꿈) 방지
     submitMessage();
-  } else if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
-    event.preventDefault();
-    submitMessage();
+  }
+};
+
+/**
+ * textarea의 높이를 내용에 맞게 자동으로 조절
+ */
+const adjustTextareaHeight = () => {
+  const textarea = textareaRef.value;
+  if (textarea) {
+    textarea.style.height = 'auto'; // 높이를 초기화하여 scrollHeight를 정확히 계산
+    textarea.style.height = `${textarea.scrollHeight}px`; // 실제 내용 높이로 설정
   }
 };
 </script>
@@ -123,7 +128,7 @@ textarea:focus {
   background-color: #333;
 }
 
-.send-btn {
+.send-button {
   position: absolute;
   right: 8px;
   bottom: 8px;
@@ -141,24 +146,19 @@ textarea:focus {
   transition: background-color 0.2s, opacity 0.2s, transform 0.2s;
 }
 
-.send-btn:hover {
+.send-button:hover {
   background-color: #2563eb;
 }
 
-.send-btn:disabled {
+.send-button:disabled {
   background-color: #555;
   cursor: not-allowed;
   opacity: 0.5;
   transform: scale(0.9);
 }
 
-.input-footer {
+.turn-indicator {
   text-align: center;
-}
-
-.turn-counter {
-  color: #888;
-  font-size: 0.8em;
 }
 
 textarea:disabled {
